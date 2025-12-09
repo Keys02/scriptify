@@ -13,6 +13,7 @@ Options:
 
   -h, --help
   -n, --nvim
+  -v, --vscodium
   Print help
 _EOF_
 
@@ -48,6 +49,8 @@ while [[ -n "$1" ]]; do
                                -n | --nvim )    shift
                                                 create_file "$1" && nvim "$1"
                                                 ;;
+                               -v | --code )    shift
+                                                create_file "$1" && vscodium "$1"
 
                                 *)              create_file "$1"
                                                 ;;
@@ -60,6 +63,12 @@ while [[ -n "$1" ]]; do
      -fn | -nf)        shift
                        if [[ -n "$1" ]]; then
                         create_file "$1" && nvim "$1"
+                        exit
+                       fi
+                       ;;
+     -fv | -vf)        shift
+                       if [[ -n "$1" ]]; then
+                        create_file "$1" && vscodium "$1"
                         exit
                        fi
                        ;;

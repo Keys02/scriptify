@@ -1,0 +1,73 @@
+#!/bin/bash
+
+usage() {
+cat <<- _EOF_ 
+Create a file and make it executable
+
+Usage: scriptify [OPTION...] [FILE...]
+
+Options:
+--------
+  -f, --file <name>
+  Specify the name of the file to create
+
+  -h, --help
+  -n, --nvim
+  Print help
+_EOF_
+
+  return
+}
+
+create_file () {
+  if [[ -e "$1" ]]; then
+  # file already exists
+    declare -l $REPLY # force the reply to become lowercase to add it to the options
+    echo "File exists, overwrite? y/n"
+    read
+
+    case $REPLY in
+    yes | y)       echo "" > "$1"
+                   ;;
+    no | n)        exit
+                   ;;
+    *)             exit 1
+                   ;;
+    esac
+  else
+    touch "$1" && chmod u+rx "$1"
+  fi
+}
+
+while [[ -n "$1" ]]; do
+  case "$1" in
+     -f | --file)      shift
+                           # When the file does not exists check for other arguments
+                           if [[ -n "$1" ]]; then
+                             case "$1" in
+                               -n | --nvim )    shift
+                                                create_file "$1" && nvim "$1"
+                                                ;;
+
+                                *)              create_file "$1"
+                                                ;;
+                             esac
+                           else
+                             usage
+                           fi
+                       exit
+                       ;;
+     -fn | -nf)        shift
+                       if [[ -n "$1" ]]; then
+                        create_file "$1" && nvim "$1"
+                        exit
+                       fi
+                       ;;
+     -h | --help)      usage
+                       ;;
+     *)                usage >&2
+                       exit 1
+                       ;;
+   esac
+   shift # Advance the positional parameters to ensure the loop eventually terminates (makes the while loop test fail)
+done

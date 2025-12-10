@@ -20,7 +20,7 @@ Options:
   -h, --help                  show help message
   -e, --editor                preferred editor, one of: nvim, code, vscodium 
 
-Modes
+Editor
 -----
   nvim                        open the script in neovim
   code                        open the file in vscode
@@ -34,13 +34,16 @@ _EOF_
 parse_mode() {
   case "$1" in
     nvim)
-      nvim $"1"
+      nvim "$FILENAME"
       ;;
     vscodium)
-      vscodium "$1"
+      vscodium "$FILENAME"
       ;;
     code)
-      code "$1"
+      code "$FILENAME"
+      ;;
+    *)
+      exit
       ;;
   esac
 }
@@ -53,12 +56,15 @@ create_file() {
     read
 
     case $REPLY in
-    yes | y)       echo "" > "$1"
-                   ;;
-    no | n)        exit
-                   ;;
-    *)             exit 1
-                   ;;
+    yes | y)       
+      echo "" > "$1"
+      ;;
+    no | n)        
+      exit
+      ;;
+    *)             
+      exit 1
+      ;;
     esac
   else
     touch "$1" && chmod u+rx "$1" && echo '#!/usr/bin/env bash' > "$1"
@@ -66,19 +72,24 @@ create_file() {
 }
 
 parse_args() {
-  local options=$(getopt -o hf: --longoptions help,help: -- "$@")
+  local options=$(getopt -o hf:e: --longoptions help,file:,editor: -- "$@")
   eval set -- "$options"
   
   while true; do
     case "$1" in
       -f | --file)
         shift
+        FILENAME="$1"
         create_file "$1" 
         ;;  
       -h | --help)
         shift
         help "$1" 
         ;;  
+      -e | --editor)
+        shift
+        parse_mode "$1"
+        ;;
       --)
         break
         ;;

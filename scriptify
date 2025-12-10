@@ -2,11 +2,11 @@
 
 set -e # exit script if any error is encountered
 
-usage() {
+help() {
 cat <<- _EOF_ 
-Usage: scriptify [OPTIONS...] [-f [FILE]] -- command
+Usage: scriptify [OPTIONS...] [-f [FILE]] [-m [mode]] -- command
 
-Create a file and make it executable and open the file in your preferred text editior
+Create a file and make it executable and further open the file in your preferred text editior
 
 Examples
 --------
@@ -17,18 +17,35 @@ scriptify -fv foobar.sh       create a file called foobar.sh and open it in vsco
 Options:
 --------
   -f, --file <name>           specify the name of the file to create
-  
-
   -h, --help                  show help message
+  -e, --editor                preferred editor, one of: nvim, code, vscodium 
 
-  -n, --nvim                  open the script in neovim
-  -v, --vscodium              open the script in vscodium
+Modes
+-----
+  nvim                        open the script in neovim
+  code                        open the file in vscode
+  vscodium                    open the file in vscodium
+  
 _EOF_
 
   return
 }
 
-create_file () {
+parse_mode() {
+  case "$1" in
+    nvim)
+      nvim $"1"
+      ;;
+    vscodium)
+      vscodium "$1"
+      ;;
+    code)
+      code "$1"
+      ;;
+  esac
+}
+
+create_file() {
   if [[ -e "$1" ]]; then
   # file already exists
     declare -l $REPLY # force the reply to become lowercase to add it to the options
@@ -48,43 +65,67 @@ create_file () {
   fi
 }
 
-while [[ -n "$1" ]]; do
-  case "$1" in
-     -f | --file)      shift
-                           # When the file does not exists check for other arguments
-                           if [[ -n "$1" ]]; then
-                             case "$1" in
-                               -n | --nvim )    shift
-                                                create_file "$1" && nvim "$1"
-                                                ;;
-                               -v | --code )    shift
-                                                create_file "$1" && vscodium "$1"
-                                                ;;
-                                *)              create_file "$1"
-                                                ;;
-                             esac
-                           else
-                             usage
-                           fi
-                       exit
-                       ;;
-     -fn | -nf)        shift
-                       if [[ -n "$1" ]]; then
-                        create_file "$1" && nvim "$1"
-                        exit
-                       fi
-                       ;;
-     -fv | -vf)        shift
-                       if [[ -n "$1" ]]; then
-                        create_file "$1" && vscodium "$1"
-                        exit
-                       fi
-                       ;;
-     -h | --help)      usage
-                       ;;
-     *)                usage >&2
-                       exit 1
-                       ;;
-   esac
-   shift # Advance the positional parameters to ensure the loop eventually terminates (makes the while loop test fail)
-done
+parse_args() {
+  local options=$(getopt -o hf: --longoptions help,help: -- "$@")
+  eval set -- "$options"
+  
+  while true; do
+    case "$1" in
+      -f | --file)
+        shift
+        create_file "$1" 
+        ;;  
+      -h | --help)
+        shift
+        help "$1" 
+        ;;  
+      --)
+        break
+        ;;
+    esac
+    shift
+  done
+}
+
+parse_args "$@" # Parse the arguments 
+
+#while [[ -n "$1" ]]; do
+#  case "$1" in
+#     -f | --file)      shift
+#                           # When the file does not exists check for other arguments
+#                           if [[ -n "$1" ]]; then
+#                             case "$1" in
+#                               -n | --nvim )    shift
+#                                                create_file "$1" && nvim "$1"
+#                                                ;;
+#                               -v | --code )    shift
+#                                                create_file "$1" && vscodium "$1"
+#                                                ;;
+#                                *)              create_file "$1"
+#                                                ;;
+#                             esac
+#                           else
+#                             usage
+#                           fi
+#                       exit
+#                       ;;
+#     -fn | -nf)        shift
+#                       if [[ -n "$1" ]]; then
+#                        create_file "$1" && nvim "$1"
+#                        exit
+#                       fi
+#                       ;;
+#     -fv | -vf)        shift
+#                       if [[ -n "$1" ]]; then
+#                        create_file "$1" && vscodium "$1"
+#                        exit
+#                       fi
+#                       ;;
+#     -h | --help)      usage
+#                       ;;
+#     *)                usage >&2
+#                       exit 1
+#                       ;;
+#   esac
+#   shift # Advance the positional parameters to ensure the loop eventually terminates (makes the while loop test fail)
+#done

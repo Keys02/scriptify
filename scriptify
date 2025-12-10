@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 usage() {
 cat <<- _EOF_ 
 Create a file and make it executable

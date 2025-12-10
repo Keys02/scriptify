@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 usage() {
 cat <<- _EOF_ 
@@ -51,7 +51,7 @@ while [[ -n "$1" ]]; do
                                                 ;;
                                -v | --code )    shift
                                                 create_file "$1" && vscodium "$1"
-
+                                                ;;
                                 *)              create_file "$1"
                                                 ;;
                              esac

@@ -57,7 +57,7 @@ create_file() {
 
     case $REPLY in
     yes | y)       
-      echo "" > "$1"
+      echo "" > "$1" && echo '#!/usr/bin/env bash' > "$1" 
       ;;
     no | n)        
       exit

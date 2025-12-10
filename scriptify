@@ -14,7 +14,7 @@ tl;dr:
   scriptify -f foobar.sh -e vscodium         create a file called foobar.sh and open it in vscodium
 
 Options:
-  -f, --file                    specify the name of the file to create
+  -f, --filename                    specify the name of the file to create
   -h, --help                    show help message
   -e, --editor                  preferred editor, one of: nvim, code, vscodium 
 
@@ -72,7 +72,7 @@ parse_args() {
   
   while true; do
     case "$1" in
-      -f | --file)
+      -f | --filename)
         shift
         FILENAME="$1"
         create_file "$1" 

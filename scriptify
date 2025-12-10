@@ -8,27 +8,22 @@ Usage: scriptify [OPTIONS...] [-f [FILE]] [-m [mode]] -- command
 
 Create a file and make it executable and further open the file in your preferred text editior
 
-Examples
---------
-scriptify -f foo.sh           create a script called foo.sh
-scritptify -fn bar.sh         create a file called bar.sh and open it in neovim
-scriptify -fv foobar.sh       create a file called foobar.sh and open it in vscodium
+tl;dr:
+  scriptify -f foo.sh                        create a script called foo.sh
+  scriptify -f bar.sh -e nvim               create a file called bar.sh and open it in neovim
+  scriptify -f foobar.sh -e vscodium         create a file called foobar.sh and open it in vscodium
 
 Options:
---------
-  -f, --file <name>           specify the name of the file to create
-  -h, --help                  show help message
-  -e, --editor                preferred editor, one of: nvim, code, vscodium 
+  -f, --file                    specify the name of the file to create
+  -h, --help                    show help message
+  -e, --editor                  preferred editor, one of: nvim, code, vscodium 
 
-Editor
------
-  nvim                        open the script in neovim
-  code                        open the file in vscode
-  vscodium                    open the file in vscodium
+Editor:
+  nvim              open the script in neovim
+  code              open the file in vscode
+  vscodium          open the file in vscodium
   
 _EOF_
-
-  return
 }
 
 parse_mode() {
@@ -98,45 +93,8 @@ parse_args() {
   done
 }
 
-parse_args "$@" # Parse the arguments 
+if [[ -z "$1" ]]; then
+  help
+fi
 
-#while [[ -n "$1" ]]; do
-#  case "$1" in
-#     -f | --file)      shift
-#                           # When the file does not exists check for other arguments
-#                           if [[ -n "$1" ]]; then
-#                             case "$1" in
-#                               -n | --nvim )    shift
-#                                                create_file "$1" && nvim "$1"
-#                                                ;;
-#                               -v | --code )    shift
-#                                                create_file "$1" && vscodium "$1"
-#                                                ;;
-#                                *)              create_file "$1"
-#                                                ;;
-#                             esac
-#                           else
-#                             usage
-#                           fi
-#                       exit
-#                       ;;
-#     -fn | -nf)        shift
-#                       if [[ -n "$1" ]]; then
-#                        create_file "$1" && nvim "$1"
-#                        exit
-#                       fi
-#                       ;;
-#     -fv | -vf)        shift
-#                       if [[ -n "$1" ]]; then
-#                        create_file "$1" && vscodium "$1"
-#                        exit
-#                       fi
-#                       ;;
-#     -h | --help)      usage
-#                       ;;
-#     *)                usage >&2
-#                       exit 1
-#                       ;;
-#   esac
-#   shift # Advance the positional parameters to ensure the loop eventually terminates (makes the while loop test fail)
-#done
+parse_args "$@" # Parse the arguments 

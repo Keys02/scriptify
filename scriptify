@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 
-set -e
+set -e # exit script if any error is encountered
 
 usage() {
 cat <<- _EOF_ 
-Create a file and make it executable
+Usage: scriptify [OPTIONS...] [-f [FILE]] -- command
 
-Usage: scriptify [OPTION...] [FILE...]
+Create a file and make it executable and open the file in your preferred text editior
+
+Examples
+--------
+scriptify -f foo.sh           create a script called foo.sh
+scritptify -fn bar.sh         create a file called bar.sh and open it in neovim
+scriptify -fv foobar.sh       create a file called foobar.sh and open it in vscodium
 
 Options:
 --------
-  -f, --file <name>
-  Specify the name of the file to create
+  -f, --file <name>           specify the name of the file to create
+  
 
-  -h, --help
-  -n, --nvim
-  -v, --vscodium
-  Print help
+  -h, --help                  show help message
+
+  -n, --nvim                  open the script in neovim
+  -v, --vscodium              open the script in vscodium
 _EOF_
 
   return

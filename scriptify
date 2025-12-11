@@ -9,12 +9,12 @@ Usage: scriptify [OPTIONS...] [-f [FILE]] [-m [mode]] -- command
 Create a file and make it executable and further open the file in your preferred text editior
 
 tl;dr:
-  scriptify -f foo.sh                        create a script called foo.sh
-  scriptify -f bar.sh -e nvim               create a file called bar.sh and open it in neovim
-  scriptify -f foobar.sh -e vscodium         create a file called foobar.sh and open it in vscodium
+  scriptify -f foo.sh                       create a script called foo.sh
+  scriptify -f bar.sh -e nvim               create a script called bar.sh and open it in neovim
+  scriptify -f foobar.sh -e vscodium        create a script called foobar.sh and open it in vscodium
 
 Options:
-  -f, --filename                    specify the name of the file to create
+  -f, --filename                specify the name of the script to create
   -h, --help                    show help message
   -e, --editor                  preferred editor, one of: nvim, code, vscodium 
 
@@ -78,8 +78,8 @@ parse_args() {
         create_file "$1" 
         ;;  
       -h | --help)
-        shift
-        help "$1" 
+        help 
+        exit
         ;;  
       -e | --editor)
         shift
@@ -95,6 +95,7 @@ parse_args() {
 
 if [[ -z "$1" ]]; then
   help
+  exit
 fi
 
 parse_args "$@" # Parse the arguments 

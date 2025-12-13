@@ -12,13 +12,13 @@ tl;dr:
   scriptify -f foo.sh                       create a script called foo.sh
   scriptify -f bar.sh -e nvim               create a script called bar.sh and open it in neovim
   scriptify -f foobar.sh -e vscodium        create a script called foobar.sh and open it in vscodium
-  scritiify -f foo.sh -d                    create a script called foo.sh and open it using the default editor ie \$EDITOR
+  scritiify -f foo.sh -d                    create a script called foo.sh and open it using the default editor i.e. \$EDITOR
 
 Options:
   -f, --filename                specify the name of the script to create
   -h, --help                    show help message
   -e, --editor                  preferred editor, one of: nvim, code, vscodium 
-  -d, --default-editor          open in default editor ie \$EDITOR  
+  -d, --default-editor          open in default editor i.e. \$EDITOR  
 
 Editor:
   nvim              open the script in neovim

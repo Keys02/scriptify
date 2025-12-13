@@ -16,3 +16,6 @@ The simplest usage of scriptify is by just creating the file and making it execu
 ``` bash
 $ scriptify -f foo.sh
 ```
+
+## Contributions
+Feel free to fork the repository, submit issues, or contribute improvements.

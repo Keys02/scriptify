@@ -41,12 +41,27 @@ parse_mode() {
       exit
       ;;
   esac
+}
 
+define_editor_env() {
+  echo "" >> ~/.profile # newline
+  echo '# Add default editor' >> ~/.profile # Comment
+  echo "export EDITOR=$REPLY" >> ~/.profile
+  source ~/.profile
 }
 
 use_def_editor() {
   local default_editor=$(echo $EDITOR)
-  $default_editor "$FILENAME"
+
+  if [[ $default_editor == "" ]]; then
+    declare -l $REPLY
+    echo "Set default editor [nvim, code, vscodium,...]"
+    read
+    define_editor_env "$REPLY"
+    "$REPLY" "$FILENAME"
+  else
+    echo "You have a default editor"
+  fi
 }
 
 create_file() {

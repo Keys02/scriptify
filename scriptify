@@ -12,11 +12,13 @@ tl;dr:
   scriptify -f foo.sh                       create a script called foo.sh
   scriptify -f bar.sh -e nvim               create a script called bar.sh and open it in neovim
   scriptify -f foobar.sh -e vscodium        create a script called foobar.sh and open it in vscodium
+  scritiify -f foo.sh -d                    create a script called foo.sh and open it using the default editor i.e. \$EDITOR
 
 Options:
   -f, --filename                specify the name of the script to create
   -h, --help                    show help message
   -e, --editor                  preferred editor, one of: nvim, code, vscodium 
+  -d, --default-editor          open in default editor i.e. \$EDITOR  
 
 Editor:
   nvim              open the script in neovim
@@ -43,6 +45,27 @@ parse_mode() {
   esac
 }
 
+define_editor_env() {
+  echo "" >> ~/.profile # newline
+  echo '# Add default editor' >> ~/.profile # Comment
+  echo "export EDITOR=$REPLY" >> ~/.profile
+  source ~/.profile
+}
+
+use_def_editor() {
+  local default_editor=$(echo $EDITOR)
+
+  if [[ $default_editor == "" ]]; then
+    declare -l $REPLY
+    echo "Set default editor [nvim, code, vscodium,...]"
+    read
+    define_editor_env "$REPLY"
+    "$REPLY" "$FILENAME"
+  else
+    echo "You have a default editor"
+  fi
+}
+
 create_file() {
   if [[ -e "$1" ]]; then
   # file already exists
@@ -67,7 +90,7 @@ create_file() {
 }
 
 parse_args() {
-  local options=$(getopt -o hf:e: --longoptions help,file:,editor: -- "$@")
+  local options=$(getopt -o hf:de: --longoptions help,file:,default-editor,editor: -- "$@")
   eval set -- "$options"
   
   while true; do
@@ -84,6 +107,9 @@ parse_args() {
       -e | --editor)
         shift
         parse_mode "$1"
+        ;;
+      -d | --default-editor)
+        use_def_editor "$FILENAME"
         ;;
       --)
         break

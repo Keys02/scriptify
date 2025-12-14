@@ -39,6 +39,9 @@ parse_editor() {
     code)
       code "$FILENAME"
       ;;
+    zed)
+      zed "$FILENAME"
+      ;;
     *)
       exit
       ;;

@@ -57,6 +57,7 @@ define_editor_env() {
 }
 
 use_def_editor() {
+  source ~/.profile # load the $EDITOR env in the login shell
   local default_editor=$(echo $EDITOR) # get the default editor in the $EDITOR env
 
   if [[ $default_editor == "" ]]; then

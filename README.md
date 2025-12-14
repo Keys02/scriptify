@@ -1,5 +1,5 @@
 # Scriptify
-Scriptify automates the intial of creation of a bash script by creating the file, making it executable and readable and then adding the shebang line. The file can be opened in your preferred editor on the fly when the file creation is successful.
+Scriptify automates the intial process of creating a bash script by creating the file, making it executable and readable and then adding the shebang line. The file can be opened in your preferred editor on the fly when the file creation is successful.
 
 ## Installation
 ``` bash

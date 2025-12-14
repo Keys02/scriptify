@@ -28,7 +28,7 @@ Editor:
 _EOF_
 }
 
-parse_mode() {
+parse_editor() {
   case "$1" in
     nvim)
       nvim "$FILENAME"
@@ -46,8 +46,8 @@ parse_mode() {
 }
 
 define_editor_env() {
-  echo "" >> ~/.profile # newline
-  echo '# Add default editor' >> ~/.profile # Comment
+  echo "" >> ~/.profile # Add a newline
+  echo '# Add default editor' >> ~/.profile # Add a comment
   echo "export EDITOR=$REPLY" >> ~/.profile
   source ~/.profile
 }
@@ -106,7 +106,7 @@ parse_args() {
         ;;  
       -e | --editor)
         shift
-        parse_mode "$1"
+        parse_editor "$1"
         ;;
       -d | --default-editor)
         use_def_editor "$FILENAME"

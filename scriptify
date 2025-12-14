@@ -50,36 +50,36 @@ parse_editor() {
 }
 
 define_editor_env() {
-  echo "" >> ~/.profile # Add a newline
-  echo '# Add default editor' >> ~/.profile # Add a comment
+  echo "" >> ~/.profile # add a newline
+  echo '# Add default editor' >> ~/.profile # add a comment
   echo "export EDITOR=$REPLY" >> ~/.profile
-  source ~/.profile
+  source ~/.profile # source the .profile file although changes takes effect after session restart
 }
 
 use_def_editor() {
-  local default_editor=$(echo $EDITOR)
+  local default_editor=$(echo $EDITOR) # get the default editor in the $EDITOR env
 
   if [[ $default_editor == "" ]]; then
-    declare -l $REPLY
+    declare -l $REPLY # convert the reply string to lowercase
     echo "Set default editor [nvim, code, vscodium,...]"
     read
     define_editor_env "$REPLY"
     "$REPLY" "$FILENAME"
   else
-    echo "You have a default editor"
+    "$default_editor" "$FILENAME"
   fi
 }
 
 create_file() {
   if [[ -e "$1" ]]; then
   # file already exists
-    declare -l $REPLY # force the reply to become lowercase to add it to the options
+    declare -l $REPLY # convert the reply string to lowercase
     echo "File exists, overwrite? y/n"
     read
 
     case $REPLY in
     yes | y)       
-      echo "" > "$1" && echo '#!/usr/bin/env bash' > "$1" 
+      echo "" > "$1" && echo '#!/usr/bin/env bash' > "$1" # clear the file content and add shebang line
       ;;
     no | n)        
       exit
@@ -89,7 +89,7 @@ create_file() {
       ;;
     esac
   else
-    touch "$1" && chmod u+rx "$1" && echo '#!/usr/bin/env bash' > "$1"
+    touch "$1" && chmod u+rx "$1" && echo '#!/usr/bin/env bash' > "$1" #create the file, make it readable and executable and add the shebang line
   fi
 }
 
@@ -123,9 +123,10 @@ parse_args() {
   done
 }
 
+# display the help message when given no argument 
 if [[ -z "$1" ]]; then
   help
   exit
 fi
 
-parse_args "$@" # Parse the arguments 
+parse_args "$@" # parse the arguments 

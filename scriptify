@@ -4,7 +4,7 @@ set -e # exit script if any error is encountered
 
 help() {
 cat <<- _EOF_ 
-Usage: scriptify [OPTIONS...] [-f [FILE]] [-m [mode]] -- command
+Usage: scriptify [options..] [-f [file]] [-e [editor]] -- command
 
 Create a file and make it executable and further open the file in your preferred text editior
 

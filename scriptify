@@ -3,7 +3,7 @@
 set -e # exit script if any error is encountered
 
 help() {
-cat <<- _EOF_ 
+cat <<- _EOF_
 Usage: scriptify [options..] [-f [file]] [-e [editor]] -- command
 
 Create a file and make it executable and further open the file in your preferred text editior
@@ -17,36 +17,21 @@ tl;dr:
 Options:
   -f, --filename                specify the name of the script to create
   -h, --help                    show help message
-  -e, --editor                  preferred editor, one of: nvim, code, vscodium 
-  -d, --default-editor          open in default editor i.e. \$EDITOR  
+  -e, --editor                  editor command to run (must exist in PATH)
+  -d, --default-editor          open in default editor i.e. \$EDITOR
 
-Editor:
-  nvim              open the script in neovim
-  code              open the file in vscode
-  vscodium          open the file in vscodium
-  zed               open the file in zed
-  
 _EOF_
 }
 
-parse_editor() {
-  case "$1" in
-    nvim)
-      nvim "$FILENAME"
-      ;;
-    vscodium)
-      vscodium "$FILENAME"
-      ;;
-    code)
-      code "$FILENAME"
-      ;;
-    zed)
-      zed "$FILENAME"
-      ;;
-    *)
-      exit
-      ;;
-  esac
+run_editor() {
+  local editor="$1"
+
+  if ! command -v "$editor" >/dev/null 2>&1; then
+    echo "Editor '$editor' not found in PATH"
+    exit 1
+  fi
+
+  "$editor" "$FILENAME"
 }
 
 define_editor_env() {
@@ -81,13 +66,13 @@ create_file() {
     case $REPLY in
     yes | y)       
       echo "" > "$1" && echo '#!/usr/bin/env bash' > "$1" # clear the file content and add shebang line
-      ;;
+        ;;
     no | n)        
-      exit
-      ;;
-    *)             
-      exit 1
-      ;;
+        exit
+        ;;
+      *)
+        exit 1
+        ;;
     esac
   else
     touch "$1" && chmod u+rx "$1" && echo '#!/usr/bin/env bash' > "$1" #create the file, make it readable and executable and add the shebang line
@@ -97,21 +82,21 @@ create_file() {
 parse_args() {
   local options=$(getopt -o hf:de: --longoptions help,file:,default-editor,editor: -- "$@")
   eval set -- "$options"
-  
+
   while true; do
     case "$1" in
       -f | --filename)
         shift
         FILENAME="$1"
         create_file "$1" 
-        ;;  
+        ;;
       -h | --help)
-        help 
+        help
         exit
-        ;;  
+        ;;
       -e | --editor)
         shift
-        parse_editor "$1"
+        run_editor "$1"
         ;;
       -d | --default-editor)
         use_def_editor "$FILENAME"

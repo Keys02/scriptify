@@ -24,6 +24,7 @@ Editor:
   nvim              open the script in neovim
   code              open the file in vscode
   vscodium          open the file in vscodium
+  zed               open the file in zed
   
 _EOF_
 }
